@@ -1,0 +1,266 @@
+/* ════════════════════════════════════════════════════════
+   SK Naawan IMS — Global Design System (BaseStyles)
+   Government-grade UI for Vue 3 + Tailwind CSS
+   ════════════════════════════════════════════════════════ */
+
+/* ── Google Fonts ───────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ══════════════════════════════════════════════════════════
+   BASE LAYER — Typography, Reset, Body
+   ══════════════════════════════════════════════════════════ */
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    @apply bg-background text-textMain antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  /* Heading font */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Plus Jakarta Sans', 'Montserrat', system-ui, sans-serif;
+    @apply text-textMain tracking-tight leading-tight;
+  }
+  h1 { @apply text-2xl font-bold; }
+  h2 { @apply text-xl font-bold; }
+  h3 { @apply text-base font-semibold; }
+
+  /* Links */
+  a { @apply text-primary transition-colors duration-200; }
+  a:hover { @apply text-primary-dark; }
+
+  /* Focus ring — accessible, on-brand */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2;
+  }
+
+  /* Scrollbar — subtle */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { @apply bg-slate-200 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-slate-300; }
+}
+
+/* ══════════════════════════════════════════════════════════
+   COMPONENTS LAYER — Reusable classes
+   ══════════════════════════════════════════════════════════ */
+@layer components {
+
+  /* ── Cards ───────────────────────────────────────────── */
+  .sk-card {
+    @apply bg-white rounded-2xl shadow-card border border-slate-100;
+  }
+  .sk-card-hover {
+    @apply sk-card hover:shadow-card-md hover:-translate-y-0.5 transition-all duration-200;
+  }
+
+  /* ── Buttons ─────────────────────────────────────────── */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl
+           text-sm font-semibold transition-all duration-200 focus-visible:ring-2
+           focus-visible:ring-offset-1 select-none;
+  }
+  .btn-primary {
+    @apply btn bg-primary hover:bg-primary-dark text-white shadow-sm
+           hover:-translate-y-0.5 active:translate-y-0
+           focus-visible:ring-primary;
+  }
+  .btn-outline {
+    @apply btn bg-white border border-slate-200 text-slate-700
+           hover:bg-slate-50 hover:-translate-y-0.5 active:translate-y-0
+           focus-visible:ring-slate-400;
+  }
+  .btn-danger {
+    @apply btn bg-danger hover:bg-rose-700 text-white shadow-sm
+           hover:-translate-y-0.5 active:translate-y-0
+           focus-visible:ring-danger;
+  }
+  .btn-warning {
+    @apply btn bg-warning hover:bg-amber-700 text-white shadow-sm
+           hover:-translate-y-0.5 active:translate-y-0
+           focus-visible:ring-warning;
+  }
+  .btn-ghost {
+    @apply btn bg-transparent text-slate-600 hover:bg-slate-100
+           focus-visible:ring-slate-300;
+  }
+
+  /* ── Form Inputs ─────────────────────────────────────── */
+  .sk-input {
+    @apply w-full bg-slate-50 border border-slate-200 rounded-xl
+           px-4 py-2.5 text-sm text-textMain placeholder-textMuted
+           focus:bg-white focus:ring-2 focus:ring-primary focus:border-primary
+           outline-none transition-all duration-200;
+  }
+  .sk-select {
+    @apply sk-input appearance-none;
+  }
+  .sk-textarea {
+    @apply sk-input resize-none;
+  }
+  .sk-label {
+    @apply block text-xs font-semibold text-textSub mb-1.5 uppercase tracking-wide;
+  }
+
+  /* ── Status Badges ───────────────────────────────────── */
+  .badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold;
+  }
+  .badge-dot {
+    @apply w-1.5 h-1.5 rounded-full bg-current;
+  }
+  .badge-approved {
+    @apply badge bg-emerald-100 text-emerald-800;
+  }
+  .badge-pending {
+    @apply badge bg-amber-100 text-amber-800;
+  }
+  .badge-rejected {
+    @apply badge bg-rose-100 text-rose-800;
+  }
+  .badge-draft {
+    @apply badge bg-slate-100 text-slate-600;
+  }
+  .badge-info {
+    @apply badge bg-blue-100 text-blue-700;
+  }
+
+  /* ── Data Tables (Government Standard) ──────────────── */
+  .sk-table {
+    @apply w-full text-left border-collapse;
+  }
+  .sk-table thead tr {
+    @apply bg-slate-50/70 border-b border-slate-100;
+  }
+  .sk-table thead th {
+    @apply px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider;
+  }
+  .sk-table tbody tr {
+    @apply border-b border-slate-50 last:border-0
+           hover:bg-slate-50/80 transition-colors duration-150;
+  }
+  .sk-table tbody td {
+    @apply px-5 py-4 text-sm text-slate-700;
+  }
+
+  /* ── Sidebar Navigation ──────────────────────────────── */
+  .nav-item {
+    @apply flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium
+           text-slate-300 hover:text-white hover:bg-white/8
+           transition-all duration-200 relative;
+  }
+  .nav-item.active {
+    @apply text-white bg-emerald-600/15;
+  }
+  .nav-item.active::before {
+    content: '';
+    @apply absolute left-0 top-1/4 bottom-1/4 w-0.5 rounded-r-full bg-emerald-500;
+  }
+
+  /* ── Section Headers ─────────────────────────────────── */
+  .sk-section-title {
+    @apply text-xs font-bold text-slate-500 uppercase tracking-widest mb-3;
+  }
+  .sk-page-title {
+    @apply text-2xl font-bold text-textMain;
+    font-family: 'Plus Jakarta Sans', 'Montserrat', system-ui, sans-serif;
+  }
+  .sk-page-sub {
+    @apply text-sm text-textSub mt-0.5;
+  }
+
+  /* ── Stat Cards ──────────────────────────────────────── */
+  .stat-card {
+    @apply rounded-2xl p-6 text-white shadow-sm flex items-center justify-between;
+  }
+  .stat-card-icon {
+    @apply p-3 bg-white/15 rounded-2xl;
+  }
+  .stat-value {
+    @apply text-4xl font-extrabold mt-1 leading-none;
+  }
+  .stat-label {
+    @apply text-sm font-medium text-white/80;
+  }
+  .stat-sub {
+    @apply text-xs text-white/60 mt-1;
+  }
+
+  /* ── Dividers ────────────────────────────────────────── */
+  .sk-divider {
+    @apply border-t border-slate-100 my-4;
+  }
+
+  /* ── Permission Badges ───────────────────────────────── */
+  .perm-badge-edit {
+    @apply inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-700
+           text-xs font-semibold px-3 py-1.5 rounded-xl border border-emerald-200;
+  }
+  .perm-badge-view {
+    @apply inline-flex items-center gap-1.5 bg-slate-100 text-slate-500
+           text-xs font-semibold px-3 py-1.5 rounded-xl border border-gray-200;
+  }
+
+  /* ── Toasts ──────────────────────────────────────────── */
+  .sk-toast {
+    @apply fixed bottom-6 right-6 z-50 bg-white rounded-2xl shadow-card-md
+           border border-slate-100 p-4 flex items-center gap-3
+           animate-fade-up;
+  }
+  .sk-toast-icon {
+    @apply w-9 h-9 bg-emerald-100 rounded-full flex items-center justify-center shrink-0;
+  }
+
+  /* ── Modal Overlay ───────────────────────────────────── */
+  .sk-modal-overlay {
+    @apply fixed inset-0 z-50 flex items-center justify-center
+           bg-slate-900/50 backdrop-blur-sm p-4;
+  }
+  .sk-modal {
+    @apply bg-white rounded-2xl shadow-xl w-full max-w-md;
+  }
+  .sk-modal-header {
+    @apply flex items-center justify-between p-6 border-b border-slate-100;
+  }
+  .sk-modal-body {
+    @apply p-6 space-y-4;
+  }
+  .sk-modal-footer {
+    @apply flex justify-end gap-3 p-6 border-t border-slate-100;
+  }
+
+  /* ── Empty State ─────────────────────────────────────── */
+  .sk-empty {
+    @apply flex flex-col items-center justify-center py-16 text-center;
+  }
+  .sk-empty-icon {
+    @apply w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mb-4;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   UTILITIES LAYER — helpers
+   ══════════════════════════════════════════════════════════ */
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .bg-white\/8  { background-color: rgb(255 255 255 / 0.08); }
+  .bg-white\/15 { background-color: rgb(255 255 255 / 0.15); }
+  .font-jakarta { font-family: 'Plus Jakarta Sans', sans-serif; }
+  .font-inter { font-family: 'Inter', sans-serif; }
+  .truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
