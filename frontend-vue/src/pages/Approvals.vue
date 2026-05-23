@@ -21,10 +21,10 @@ const fetchPending = async () => {
   isLoading.value = true
   try {
     const [actRes, budRes] = await Promise.all([
-      fetch('http://localhost:5000/api/proposals/activity-proposals/pending', {
+      fetch('http://127.0.0.1:5000/api/proposals/activity-proposals/pending', {
         headers: { 'Authorization': `Bearer ${userStore.token}` }
       }),
-      fetch('http://localhost:5000/api/proposals/budget-proposals/pending', {
+      fetch('http://127.0.0.1:5000/api/proposals/budget-proposals/pending', {
         headers: { 'Authorization': `Bearer ${userStore.token}` }
       })
     ])
@@ -82,7 +82,7 @@ const showStatus = (type, title, message) => {
 const approveItem = async (item) => {
   try {
     const endpoint = item.type === 'Activity' ? 'activity-proposals' : 'budget-proposals'
-    const response = await fetch(`http://localhost:5000/api/proposals/${endpoint}/${item.id}/approve`, {
+    const response = await fetch(`http://127.0.0.1:5000/api/proposals/${endpoint}/${item.id}/approve`, {
       method: 'PATCH',
       headers: { 'Authorization': `Bearer ${userStore.token}` }
     })
@@ -109,7 +109,7 @@ const submitReturn = async () => {
   
   try {
     const endpoint = item.type === 'Activity' ? 'activity-proposals' : 'budget-proposals'
-    const response = await fetch(`http://localhost:5000/api/proposals/${endpoint}/${item.id}/return`, {
+    const response = await fetch(`http://127.0.0.1:5000/api/proposals/${endpoint}/${item.id}/return`, {
       method: 'PATCH',
       headers: { 
         'Content-Type': 'application/json',

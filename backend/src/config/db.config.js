@@ -10,6 +10,9 @@ const sequelize = new Sequelize(
     port: process.env.DB_PORT,
     dialect: 'postgres',
     logging: false, // Set to true if you want to see SQL queries
+    define: {
+      freezeTableName: true  // Prevent Sequelize from pluralizing/capitalizing table names in FK references
+    },
     pool: {
       max: 5,
       min: 0,
@@ -23,6 +26,22 @@ const connectDB = async () => {
   try {
     await sequelize.authenticate();
     console.log('✅ PostgreSQL Connected Successfully.');
+    
+    // Ensure CHECK constraint on events status accepts the full set of statuses
+    try {
+      await sequelize.query(`
+        ALTER TABLE events 
+        DROP CONSTRAINT IF EXISTS events_status_check;
+      `);
+      await sequelize.query(`
+        ALTER TABLE events 
+        ADD CONSTRAINT events_status_check 
+        CHECK (status IN ('Planning', 'Upcoming', 'Completed', 'Cancelled', 'Approved', 'Pending'));
+      `);
+      console.log('✅ Events Table Status CHECK Constraint Verified.');
+    } catch (err) {
+      console.warn('⚠️ Warning verifying Events status check constraint:', err.message);
+    }
   } catch (error) {
     console.error('❌ Unable to connect to the database:', error.message);
     process.exit(1);

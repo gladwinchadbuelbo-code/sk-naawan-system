@@ -134,6 +134,7 @@
 import { reactive, computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '../stores/user'
+import { apiFetch, parseApiError } from '../utils/api'
 import { 
   ArrowLeft as ArrowLeftIcon, 
   Plus as PlusIcon, 
@@ -197,16 +198,12 @@ const submitProposal = async () => {
       purpose: proposal.description 
     }
     
-    console.log('API Request: POST http://127.0.0.1:5000/api/proposals/budget-proposals', payload)
+    console.log('API Request: POST /api/proposals/budget-proposals', payload)
 
-    const response = await fetch('http://localhost:5000/api/proposals/budget-proposals', {
+    const response = await apiFetch('/api/proposals/budget-proposals', {
       method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${userStore.token}` 
-      },
       body: JSON.stringify(payload)
-    })
+    }, userStore.token)
     
     const result = await response.json()
     
@@ -216,7 +213,8 @@ const submitProposal = async () => {
       modal.type = 'success'
       modal.show = true
     } else {
-      throw new Error(result.message || 'Unable to save proposal to database.')
+      const errorMsg = await parseApiError(response, result)
+      throw new Error(errorMsg)
     }
   } catch (error) {
     console.error('Submission Error:', error)

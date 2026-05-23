@@ -18,6 +18,33 @@ app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/proposals', require('./routes/proposal.routes'));
 app.use('/api/attendance', require('./routes/attendance.routes'));
 app.use('/api/transactions', require('./routes/transaction.routes'));
+app.use('/api/announcements', require('./routes/announcement.routes'));
+// Supabase Test Route
+const supabase = require('./config/supabaseClient');
+app.post('/api/saveUser', async (req, res) => {
+  try {
+    const { name, email } = req.body;
+    
+    if (!name || !email) {
+      return res.status(400).json({ error: 'Name and email are required' });
+    }
+
+    const { data, error } = await supabase
+      .from('users')
+      .insert([{ name, email }])
+      .select();
+
+    if (error) {
+      console.error("Supabase Insert Error:", error);
+      return res.status(500).json({ error: error.message });
+    }
+
+    res.status(200).json({ message: 'User saved successfully!', data });
+  } catch (err) {
+    console.error("Server Error:", err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 // Base Route
 app.get('/', (req, res) => {

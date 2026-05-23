@@ -9,12 +9,16 @@ const {
   returnActivityProposal,
   approveBudgetProposal,
   returnBudgetProposal,
-  getMyProposals
+  getMyProposals,
+  getProposalById
 } = require('../controllers/proposal.controller');
 const { verifyToken, authorize } = require('../middleware/auth.middleware');
 
 // User specific
 router.get('/my-proposals', verifyToken, getMyProposals);
+
+// Single proposal detail
+router.get('/:id', verifyToken, getProposalById);
 
 // Activity Proposals
 router.post('/activity-proposals', verifyToken, authorize('secretary', 'treasurer'), submitActivityProposal);

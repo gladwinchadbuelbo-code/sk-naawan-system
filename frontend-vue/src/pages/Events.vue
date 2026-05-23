@@ -62,6 +62,17 @@
           <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-slate-200/20 rounded-full group-hover:scale-150 transition-transform"></div>
         </button>
 
+        <button @click="isAIPanelOpen = true" class="flex items-center gap-5 p-5 bg-gradient-to-r from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 rounded-[1.5rem] border border-indigo-100 transition-all group overflow-hidden relative">
+          <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-indigo-500 shadow-sm group-hover:scale-110 transition-transform z-10">
+            <SparklesIcon class="w-6 h-6" />
+          </div>
+          <div class="text-left z-10">
+            <p class="text-[12px] font-black text-slate-900 uppercase tracking-widest leading-none">AI Insights</p>
+            <p class="text-[10px] font-bold text-indigo-400 mt-1 uppercase">Smart Recommendations</p>
+          </div>
+          <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-indigo-200/20 rounded-full group-hover:scale-150 transition-transform"></div>
+        </button>
+
         <button @click="generateReports" class="flex items-center gap-5 p-5 bg-slate-50 hover:bg-slate-100 rounded-[1.5rem] border border-slate-100 transition-all group overflow-hidden relative">
           <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-slate-500 shadow-sm group-hover:scale-110 transition-transform z-10">
             <DownloadIcon class="w-6 h-6" />
@@ -418,6 +429,9 @@
        </div>
     </Transition>
 
+    <!-- AI Recommendations Panel -->
+    <AIRecommendationsPanel :isOpen="isAIPanelOpen" @close="isAIPanelOpen = false" />
+
   </div>
 </template>
 
@@ -426,13 +440,14 @@ import { ref, computed, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '../stores/user'
 import PublicEvents from './public/Events.vue'
+import AIRecommendationsPanel from '../components/AIRecommendationsPanel.vue'
 import {
   Calendar as CalendarIcon, Clock as ClockIcon, CheckCircle as CheckCircleIcon,
   Plus as PlusIcon, FileText as FileTextIcon, Users as UsersIcon, Download as DownloadIcon,
   Pencil as PencilIcon, Search as SearchIcon, Eye as EyeIcon, MapPin as MapPinIcon,
   Trash2 as Trash2Icon, X as XIcon, Share2 as Share2Icon, Link as LinkIcon,
   Check as CheckIcon, AlertTriangle as AlertTriangleIcon, Info as InfoIcon,
-  Archive as ArchiveIcon
+  Archive as ArchiveIcon, Sparkles as SparklesIcon
 } from 'lucide-vue-next'
 
 const router = useRouter()
@@ -448,6 +463,7 @@ const events = ref([
 const isModalOpen = ref(false)
 const isViewModalOpen = ref(false)
 const isDeleteModalOpen = ref(false)
+const isAIPanelOpen = ref(false)
 const isEditing = ref(false)
 const selectedEvent = ref(null)
 const searchQuery = ref('')

@@ -102,13 +102,13 @@
                 </span>
               </td>
               <td class="p-5 text-right whitespace-nowrap">
-                <button v-if="item.status === 'Pending Review'" class="text-blue-600 bg-blue-50 hover:bg-blue-100 text-xs font-medium px-4 py-2 rounded-lg transition-colors mr-2">
+                <button v-if="item.status === 'Pending Review'" @click="$router.push(`/create-proposal?edit=${item.id}`)" class="text-blue-600 bg-blue-50 hover:bg-blue-100 text-xs font-medium px-4 py-2 rounded-lg transition-colors mr-2">
                   Edit
                 </button>
                 <button v-if="item.status === 'Approved'" @click="$router.push(`/attendance/${item.id}`)" class="text-white bg-[#10B981] hover:bg-emerald-600 text-xs font-medium px-4 py-2 rounded-lg transition-colors mr-2">
                   Manage Attendance
                 </button>
-                <button class="text-slate-500 hover:text-slate-700 text-xs font-medium px-3 py-2 border border-gray-200 hover:bg-gray-100 rounded-lg transition-colors">
+                <button @click="$router.push(`/proposal/${item.id}`)" class="text-slate-500 hover:text-slate-700 text-xs font-medium px-3 py-2 border border-gray-200 hover:bg-gray-100 rounded-lg transition-colors">
                   View Details
                 </button>
               </td>
@@ -143,7 +143,7 @@ const isLoading = ref(false)
 const fetchProposals = async () => {
   isLoading.value = true
   try {
-    const response = await fetch('http://localhost:5000/api/proposals/my-proposals', {
+    const response = await fetch('http://127.0.0.1:5000/api/proposals/my-proposals', {
       headers: { 'Authorization': `Bearer ${userStore.token}` }
     })
     

@@ -44,7 +44,7 @@
         <p class="text-slate-500 text-sm font-medium leading-relaxed mb-8 flex-1">{{ post.summary }}</p>
         
         <div class="pt-8 border-t border-slate-100 flex items-center justify-between">
-           <button class="text-[10px] font-black text-slate-900 uppercase tracking-widest hover:text-emerald-600 transition-colors flex items-center gap-2">
+           <button @click="viewDetails(post.id)" class="text-[10px] font-black text-slate-900 uppercase tracking-widest hover:text-emerald-600 transition-colors flex items-center gap-2">
               Read Details <ArrowRightIcon class="w-3.5 h-3.5" />
            </button>
            <div class="flex -space-x-2">
@@ -78,7 +78,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '../../stores/user'
 import { 
   Bell as BellIcon, 
   ArrowRight as ArrowRightIcon, 
@@ -86,14 +88,57 @@ import {
   Info as InfoIcon
 } from 'lucide-vue-next'
 
-const feed = [
-  { id: 1, date: 'MAY 10, 2026', category: 'EVENT', title: 'Q2 Sports League Registration Deadline Extended', summary: 'Due to popular demand, we are extending the registration for the Inter-Barangay Sports League until May 15.' },
-  { id: 2, date: 'MAY 08, 2026', category: 'GOVERNANCE', title: 'New Transparency Dashboard Goes Live', summary: 'The SK Naawan IMS Public Portal is now operational, providing citizens with real-time access to project expenditures.' },
-  { id: 3, date: 'MAY 05, 2026', category: 'ENVIRONMENT', title: 'Tree Planting Drive: 500 Saplings Planted', summary: 'In partnership with the DENR, Naawan youth successfully planted 500 native saplings along the riverbanks.' },
-  { id: 4, date: 'APR 28, 2026', category: 'HEALTH', title: 'Free Medical Mission for Youth Residents', summary: 'Join us this weekend for a specialized youth medical mission offering free dental checkups and vitamins.' },
-  { id: 5, date: 'APR 20, 2026', category: 'TRAINING', title: 'Digital Literacy Workshop for Out-of-School Youth', summary: 'Empowering our youth with basic computer skills and online safety training at the SK Hub.' },
-  { id: 6, date: 'APR 15, 2026', category: 'MEETING', title: 'Barangay SK Federation Quarterly Meeting', summary: 'Official recap of the federation meeting discussing the upcoming youth month festivities and project allocations.' }
+const router = useRouter()
+const userStore = useUserStore()
+const feed = ref([])
+const isLoading = ref(true)
+const error = ref(null)
+
+// Fallback mock data in case API returns empty or fails
+const fallbackFeed = [
+  { id: 'mock-1', date: 'MAY 10, 2026', category: 'EVENT', title: 'Q2 Sports League Registration Deadline Extended', summary: 'Due to popular demand, we are extending the registration for the Inter-Barangay Sports League until May 15.' },
+  { id: 'mock-2', date: 'MAY 08, 2026', category: 'GOVERNANCE', title: 'New Transparency Dashboard Goes Live', summary: 'The SK Naawan IMS Public Portal is now operational, providing citizens with real-time access to project expenditures.' },
+  { id: 'mock-3', date: 'MAY 05, 2026', category: 'ENVIRONMENT', title: 'Tree Planting Drive: 500 Saplings Planted', summary: 'In partnership with the DENR, Naawan youth successfully planted 500 native saplings along the riverbanks.' },
+  { id: 'mock-4', date: 'APR 28, 2026', category: 'HEALTH', title: 'Free Medical Mission for Youth Residents', summary: 'Join us this weekend for a specialized youth medical mission offering free dental checkups and vitamins.' },
+  { id: 'mock-5', date: 'APR 20, 2026', category: 'TRAINING', title: 'Digital Literacy Workshop for Out-of-School Youth', summary: 'Empowering our youth with basic computer skills and online safety training at the SK Hub.' },
+  { id: 'mock-6', date: 'APR 15, 2026', category: 'MEETING', title: 'Barangay SK Federation Quarterly Meeting', summary: 'Official recap of the federation meeting discussing the upcoming youth month festivities and project allocations.' }
 ]
+
+const fetchAnnouncements = async () => {
+  isLoading.value = true
+  error.value = null
+  try {
+    const response = await fetch('http://127.0.0.1:5000/api/announcements', {
+      headers: { 'Authorization': `Bearer ${userStore.token}` }
+    })
+    if (!response.ok) throw new Error(`HTTP ${response.status}`)
+    const data = await response.json()
+    const items = data.data || []
+    if (items.length > 0) {
+      feed.value = items.map(a => ({
+        id: a.id,
+        date: new Date(a.date || a.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).toUpperCase(),
+        category: (a.category || 'GENERAL').toUpperCase(),
+        title: a.title,
+        summary: a.summary
+      }))
+    } else {
+      // Use fallback when DB is empty
+      feed.value = fallbackFeed
+    }
+  } catch (err) {
+    console.warn('API unavailable, using fallback data:', err.message)
+    feed.value = fallbackFeed
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const viewDetails = (id) => {
+  router.push(`/announcement/${id}`)
+}
+
+onMounted(fetchAnnouncements)
 </script>
 
 <style scoped>
